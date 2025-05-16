@@ -1,0 +1,57 @@
+ile Storage Service
+In this section, you will apply for and mount file storage to ECS1 as user ecs.
+Step 1 Creates a share type.
+On the Administrator page, choose Share File Storage > Share Types. On the page that
+is displayed, click Create Share Type.
+
+
+In the displayed dialog box, set the parameters as follows:
+
+
+Click OK to complete the share type configuration.
+Step 2 Create shared file storage.
+
+On the Console page, choose Share File Storage > Shares. On the page that is
+displayed, click Create Share.
+
+
+Create a file share as follows:
+
+
+Click OK.
+Step 3 Configure the access rule.
+After the share is created, click More and select Manage Access Rule.
+
+On the page that is displayed, click Add Access Rule and set the parameters as follows:
+
+Click OK.
+Step 4 Mount the shared file storage.
+Create the ecs user in Ceph and export the keyring file.
+ceph auth caps client.manila mon 'allow rwx' mgr 'allow rw'
+ceph auth get client.manila -o /etc/ceph/ceph.client.manila.keyring
+ceph auth get-or-create --name client.manila --keyring /etc/ceph/ceph.client.manila.keyring client.ecs >
+ecs.keyring
+Save the exported ecs.keyring file to ECS1.
+
+
+Click the share created in step 3 to open the share details page.
+
+
+Record the path except the IP address and port number, for example,
+/volumes/_nogroup/d626635c-ba07-4df3-b179-f98404357ada/07d8eafc-5d30-4c72-
+9018-6f4522d2d459.
+Run the following command on ECS1:
+ceph-fuse --name client.ecs --keyring /etc/ceph/ecs.keyring --conf /etc/ceph/ceph.conf --
+client_mountpoint /volumes/_nogroup/d626635c-ba07-4df3-b179-f98404357ada/07d8eafc-5d30-4c72-
+9018-6f4522d2d459 /mnt
+If the following information is displayed, the shared file storage is mounted successfully:
+
+
+
+Add the following content to the /etc/fstab file on ECS1 to enable automatic mounting
+of the shared file storage during system startup:
+name=client.ecs,keyring=/etc/ceph/ecs.keyring,conf=/etc/ceph/ceph.conf,client_mountpoint=/volumes/_n
+ogroup/d626635c-ba07-4df3-b179-f98404357ada/07d8eafc-5d30-4c72-9018-6f4522d2d459 /mnt
+fuse.ceph defaults,_netdev 0 0
+
+
