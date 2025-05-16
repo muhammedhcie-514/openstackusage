@@ -1,0 +1,72 @@
+In this section, you will create ECS1 and ECS2 based on the image created in the previous
+section. The requirements for the ECSs are as follows:
+1. ECS1 and ECS2 use rbd-1 and rbd-2 as their backend storage, respectively.
+2. The two ECSs run on different compute nodes.
+3. ceph-fuse is installed in the ECSs.
+Step 1 Create an ECS flavor.
+On the administrator page, choose Compute > Flavor. On the displayed page, click
+Create Flavor, and configure the flavor based on the following recommended values:
+
+
+After setting the values, click Next: Access Type Setting, and choose Public.
+
+
+
+Step 2 Create a network.
+On the Console page, choose Network > Networks. On the displayed page, click Create
+Network and set the network based on the following recommended values:
+
+Choose Routers from the expanded menu. Click More of an existing router (if no router
+is available, create a router and set the external gateway by referring to step 2 in section
+4.3.1) and choose Connect Subnet. In the displayed dialog box, select the created
+openeuler1 subnet.
+
+Step 3 Create a server group.
+On the Console page, choose Compute > Server Groups.
+
+On the displayed page, click Create Server Group and set the parameters as follows:
+
+Step 4 Apply for floating IP addresses.
+ceph-fuse needs to be installed on the two ECSs, and the ECSs need to connect to the
+Internet. Therefore, you need to apply for two floating IP addresses to be bound to the
+ECSs in advance. The procedure is as follows:
+On the Console page, choose Network > Floating IPs.
+
+
+On the displayed page, click Allocate IP. In the displayed dialog box, set the parameters
+as follows:
+
+
+The network and subnet are the provider network created in section 4.3.
+Step 5 Create the ECSs.
+Create the ECSs on the Console page. Select different types for System Disk for the ECSs
+to use different backend storage.
+
+Select _DEFAULT_ for ECS1 and openeuler for ECS2.
+Set the networks of both ECSs to use the previously created port.
+
+
+In System Config, add the two ECSs to the openeuler server group created in step 3.
+
+In the User Data dialog box, enter the following information to install ceph-fuse:
+
+
+Click Next: Confirm Config and click OK to create the ECS.
+During the ECS creation, click the ECS name to go to the ECS details page.
+
+
+
+Click Interfaces to go to the Port Detail page. Click More in the upper right corner,
+select Associate Floating IP, and bind the floating IP address created in step 4.
+Note: Ensure that the floating IP address is bound before the ECS creation is complete.
+Otherwise, you will miss the time to install ceph-fuse. ceph-fuse installation may take a
+long time. After the ECS is created, log in and check whether the installation progress.
+The following figure shows an ongoing installation.
+
+
+Wait for three minutes until the installation is complete.
+Question: Is the password used for ECS login the same as the password set during
+ECS creation? Why or why not?
+Answer: No. The default password of the image (openEuler12#$) is used for
+login. According to the following logs, the password is updated to the
+configured one after ceph-fuse is installed.
