@@ -1,0 +1,33 @@
+In this section, you will use Guestfish to create an image based on openeuler2203sp3.qcow2 and write ceph.conf to its /etc/ceph directory.
+Download the openeuler-2203sp3.qcow2 image from the openEuler official website:
+https://mirrors.nju.edu.cn/openeuler/openEuler-22.03-LTSSP3/virtual_machine_img/x86_64/openEuler-22.03-LTS-SP3-x86_64.qcow2.xz
+Step 1 Install Guestfish on the controller node.
+yum install -y libguestfs-tools
+Step 2 Edit the image.
+Set the environment variable to allow the image to run directly.
+export LIBGUESTFS_BACKEND=direct
+Run the image.
+guestfish -i -a openeuler-2203sp3.qcow2
+
+Create the /etc/ceph directory and the ceph.conf file.
+mkdir /etc/ceph
+touch /etc/ceph/ceph.conf
+Run the edit command to edit ceph.conf.
+edit /etc/ceph/ceph.conf
+Write Ceph information into ceph.conf, for example:
+# minimal ceph.conf for 306410d2-e503-11ee-86f8-000c29c2736c
+[global]
+ fsid = 306410d2-e503-11ee-86f8-000c29c2736c
+ mon_host = [v2:192.168.1.134:3300/0,v1:192.168.1.134:6789/0]
+(Optional) After saving the file and exit, re-label all files to avoid any SELinux context
+issues.
+selinux-relabel /etc/selinux/targeted/contexts/files/file_contexts /
+sync
+Note: Relabeling is not mandatory because the image used in this exercise does not
+contain SELinux-related modules.
+After the execution is complete, run the exit command to exit.
+
+Step 3 Upload the image.
+Run a command or use the dashboard to register the generated image.
+
+
